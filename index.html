@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>재희 폰 | Jaehee Phone (iOS Simulator)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Apple Inter/SF Font Family -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Noto Sans KR', 'Inter', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* iOS Spring & Smooth Physics Transitions */
+        .ios-spring {
+            transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.12), opacity 0.3s ease;
+        }
+        
+        .ios-slide {
+            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.35s ease;
+        }
+
+        /* Glassmorphism & Frost Effects */
+        .ios-glass {
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .ios-glass-dark {
+            background: rgba(18, 18, 20, 0.65);
+            backdrop-filter: blur(30px) saturate(190%);
+            -webkit-backdrop-filter: blur(30px) saturate(190%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .ios-dock-glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(35px) saturate(200%);
+            -webkit-backdrop-filter: blur(35px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* iOS Squircle Icon Border Radius */
+        .ios-icon {
+            border-radius: 22.37%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .ios-icon:active {
+            transform: scale(0.90);
+            filter: brightness(0.88);
+        }
+
+        /* Custom Scrollbar for Chat & Photos */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        /* Chat Speech Bubble Styling */
+        .chat-bubble-received::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: -6px;
+            width: 12px;
+            height: 12px;
+            background: #ffffff;
+            clip-path: polygon(100% 0, 0 50%, 100% 100%);
+        }
+
+        .chat-bubble-sent::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            right: -6px;
+            width: 12px;
+            height: 12px;
+            background: #FEE500;
+            clip-path: polygon(0 0, 100% 50%, 0 100%);
+        }
+
+        /* Pulsing Dynamic Island Animation */
+        @keyframes islandExpand {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        .island-pulse {
+            animation: islandExpand 2.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 min-h-screen flex items-center justify-center p-0 md:p-6 overflow-hidden">
+
+    <!-- =======================================================================
+    [GitHub Pages Customization Guide]
+    1. Save this file as `index.html`.
+    2. Upload it to your GitHub Repository (e.g. jaehee-phone).
+    3. Enable GitHub Pages in Repository Settings -> Pages -> Source: Branch 'main'.
+    4. Access your website at `https://<username>.github.io/<repo-name>`!
+
+    Modify Jaehee's pictures, text dialogues, and settings in the `CONFIG` object 
+    located in the <script> section at the bottom of this file.
+    ======================================================================= -->
+
+    <!-- iPhone Hardware Container Frame -->
+    <div class="relative w-full max-w-[420px] h-[100vh] md:h-[860px] bg-black md:rounded-[56px] p-2 md:p-3.5 border-0 md:border-[10px] border-slate-800 shadow-2xl flex flex-col overflow-hidden select-none">
+        
+        <!-- Hardware Side Buttons (Simulated for Desktop view) -->
+        <div class="hidden md:block absolute -left-[14px] top-28 w-[4px] h-10 bg-slate-700 rounded-l-md"></div>
+        <div class="hidden md:block absolute -left-[14px] top-44 w-[4px] h-14 bg-slate-700 rounded-l-md"></div>
+        <div class="hidden md:block absolute -left-[14px] top-62 w-[4px] h-14 bg-slate-700 rounded-l-md"></div>
+        <div class="hidden md:block absolute -right-[14px] top-40 w-[4px] h-20 bg-slate-700 rounded-r-md"></div>
+
+        <!-- Phone Inner Display Canvas -->
+        <div id="phone-screen" class="relative w-full h-full rounded-0 md:rounded-[44px] overflow-hidden bg-cover bg-center flex flex-col justify-between transition-all duration-500" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop');">
+            
+            <!-- Dark Tint Overlay for Wallpaper readability -->
+            <div id="wallpaper-dim" class="absolute inset-0 bg-black/20 pointer-events-none z-0 transition-opacity duration-300"></div>
+
+            <!-- ========================================================= -->
+            <!-- iOS TOP STATUS BAR & DYNAMIC ISLAND -->
+            <!-- ========================================================= -->
+            <div class="relative z-50 w-full px-7 pt-3 pb-1 flex justify-between items-center text-white text-xs font-semibold">
+                <!-- Status Bar Clock -->
+                <span id="status-clock" class="w-12 text-center font-medium tracking-tight">12:34</span>
+                
+                <!-- Dynamic Island Container -->
+                <div id="dynamic-island" onclick="handleDynamicIslandClick()" class="w-28 h-7 bg-black rounded-full flex items-center justify-between px-2.5 shadow-md cursor-pointer transition-all duration-300 hover:scale-105 z-50">
+                    <div class="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center">
+                        <div class="w-1 h-1 rounded-full bg-blue-900"></div>
+                    </div>
+                    
+                    <!-- Dynamic Call / Music Status inside Notch -->
+                    <div id="island-active-content" class="hidden flex items-center space-x-1.5 overflow-hidden">
+                        <span id="island-status-text" class="text-[9px] text-pink-400 font-medium truncate max-w-[55px]">재희 00:00</span>
+                        <div class="flex items-end space-x-0.5 h-2.5">
+                            <div class="w-0.5 h-2 bg-green-400 animate-pulse"></div>
+                            <div class="w-0.5 h-3 bg-green-400 animate-pulse" style="animation-delay: 0.15s"></div>
+                            <div class="w-0.5 h-1.5 bg-green-400 animate-pulse" style="animation-delay: 0.3s"></div>
+                        </div>
+                    </div>
+
+                    <div class="w-2.5 h-2.5 rounded-full bg-indigo-950 border border-indigo-900/60"></div>
+                </div>
+
+                <!-- Status Bar Icons -->
+                <div class="w-12 flex justify-end items-center space-x-1.5 text-[11px] opacity-90">
+                    <i class="fa-solid fa-signal"></i>
+                    <span class="text-[9px] font-bold tracking-tighter">5G</span>
+                    <div class="flex items-center space-x-0.5">
+                        <span id="battery-level" class="text-[9px] font-bold">100</span>
+                        <i class="fa-solid fa-battery-full text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- VIEW 1: iOS LOCK SCREEN -->
+            <!-- ========================================================= -->
+            <div id="lock-screen" class="relative z-40 flex-1 flex flex-col justify-between px-6 pt-4 pb-8 text-white text-center ios-slide">
+                <!-- Clock & Date Header -->
+                <div class="mt-4 flex flex-col items-center">
+                    <div class="flex items-center space-x-1 opacity-80 mb-1">
+                        <i class="fa-solid fa-lock text-[11px]"></i>
+                        <span id="lock-date" class="text-sm font-medium tracking-wide">10월 21일 수요일</span>
+                    </div>
+                    <div id="lock-clock" class="text-7xl font-extralight tracking-tight font-sans drop-shadow-md">12:34</div>
+                </div>
+
+                <!-- Notification Cards Center Container -->
+                <div class="my-auto space-y-3 max-w-sm mx-auto w-full">
+                    <!-- Notification Item 1: Jaehee KakaoTalk Message -->
+                    <div onclick="unlockToApp('kakaotalk')" class="ios-glass p-3.5 rounded-3xl text-left shadow-xl cursor-pointer transform hover:scale-[1.02] active:scale-95 transition-all duration-200 border border-white/20">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-5 h-5 bg-[#FEE500] rounded-md flex items-center justify-center text-black font-extrabold text-[10px] shadow-sm">톡</div>
+                                <span class="text-[11px] font-semibold text-white/90">카카오톡</span>
+                            </div>
+                            <span class="text-[10px] text-white/60">방금 전</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <img id="lock-jaehee-avatar" src="" class="w-10 h-10 rounded-2xl object-cover border border-white/30 shadow" alt="재희 프로필">
+                            <div class="flex-1 overflow-hidden">
+                                <div class="text-xs font-bold text-white flex items-center gap-1.5">
+                                    <span id="lock-jaehee-name">재희</span>
+                                    <span class="bg-pink-500/80 text-white text-[8px] px-1.5 py-0.2 rounded-full font-normal">최애 💜</span>
+                                </div>
+                                <div id="lock-jaehee-msg" class="text-xs text-white/85 truncate mt-0.5">오늘 뭐해? 보고 싶어! 💜</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Item 2: Missed Call / Alert -->
+                    <div onclick="unlockToApp('phone')" class="ios-glass p-3 rounded-2xl text-left shadow-lg cursor-pointer transform hover:scale-[1.02] active:scale-95 transition-all duration-200 border border-white/15 opacity-90">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-5 h-5 bg-green-500 rounded-md flex items-center justify-center text-white text-[10px] shadow-sm">
+                                    <i class="fa-solid fa-phone text-[9px]"></i>
+                                </div>
+                                <span class="text-xs font-semibold text-white/90">음성 통화</span>
+                            </div>
+                            <span class="text-[10px] text-white/60">10분 전</span>
+                        </div>
+                        <p class="text-xs text-white/80 mt-1 pl-7">부재중 전화: 재희 💜 (1)</p>
+                    </div>
+                </div>
+
+                <!-- Lock Screen Bottom Controls & Swipe Bar -->
+                <div class="flex flex-col items-center space-y-6">
+                    <div class="w-full flex justify-between items-center px-4">
+                        <button onclick="toggleTorch()" id="torch-btn" class="w-12 h-12 rounded-full ios-glass flex items-center justify-center text-white active:bg-white active:text-black transition-all">
+                            <i class="fa-solid fa-flashlight text-base"></i>
+                        </button>
+                        <button onclick="unlockToApp('gallery')" class="w-12 h-12 rounded-full ios-glass flex items-center justify-center text-white active:bg-white active:text-black transition-all">
+                            <i class="fa-solid fa-camera text-base"></i>
+                        </button>
+                    </div>
+
+                    <!-- Swipe Bar -->
+                    <div onclick="unlockPhone()" class="cursor-pointer flex flex-col items-center group">
+                        <span class="text-[11px] font-light text-white/70 tracking-tight mb-1 group-hover:text-white transition-colors">위로 쓸어올려 해제</span>
+                        <div class="w-36 h-1 bg-white/80 rounded-full shadow-lg group-hover:bg-white transition-all"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- VIEW 2: iOS HOME SCREEN -->
+            <!-- ========================================================= -->
+            <div id="home-screen" class="relative z-30 flex-1 flex flex-col justify-between p-5 hidden ios-spring">
+                
+                <!-- Main Apps Grid (4 x 4) -->
+                <div class="grid grid-cols-4 gap-y-6 gap-x-3.5 pt-4">
+                    <!-- KakaoTalk -->
+                    <div onclick="openApp('kakaotalk')" class="flex flex-col items-center group cursor-pointer">
+                        <div class="relative w-14 h-14 bg-[#FEE500] ios-icon flex items-center justify-center text-[#3C1E1E]">
+                            <i class="fa-solid fa-comment text-2xl"></i>
+                            <span id="unread-badge" class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-extrabold w-5 h-5 flex items-center justify-center rounded-full border-2 border-slate-900 shadow">1</span>
+                        </div>
+                        <span class="text-[11px] text-white font-medium mt-1.5 drop-shadow-md">카카오톡</span>
+                    </div>
+
+                    <!-- Phone / Call -->
+                    <div onclick="openApp('phone')" class="flex flex-col items-center group cursor-pointer">
+                        <div class="w-14 h-14 bg-gradient-to-b from-green-400 to-green-600 ios-icon flex items-center justify-center text-white">
+                            <i class="fa-solid fa-phone text-2xl"></i>
+                        </div>
+                        <span class="text-[11px] text-white font-medium mt-1.5 drop-shadow-md">전화</span>
+                    </div>
+
+                    <!-- Photos / Gallery -->
+                    <div onclick="openApp('gallery')" class="flex flex-col items-center group cursor-pointer">
+                        <div class="w-14 h-14 bg-white ios-icon flex items-center justify-center relative overflow-hidden">
+                            <div class="grid grid-cols-2 gap-0.5 w-full h-full p-1.5 bg-gradient-to-tr from-pink-400 via-purple-400 to-indigo-500">
+                                <div class="bg-white/40 rounded-sm"></div>
+                                <div class="bg-white/60 rounded-sm"></div>
+                                <div class="bg-white/80 rounded-sm"></div>
+                                <div class="bg-white rounded-sm"></div>
+                            </div>
+                        </div>
+                        <span class="text-[11px] text-white font-medium mt-1.5 drop-shadow-md">사진첩</span>
+                    </div>
+
+                    <!-- Instagram -->
+                    <div onclick="showToast('재희 공식 인스타그램으로 이동 중...')" class="flex flex-col items-center group cursor-pointer">
+                        <div class="w-14 h-14 bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 ios-icon flex items-center justify-center text-white">
+                            <i class="fa-brands fa-instagram text-2xl"></i>
+                        </div>
+                        <span class="text-[11px] text-white font-medium mt-1.5 drop-shadow-md">Instagram</span>
+                    </div>
+
+                    <!-- Calendar App -->
+                    <div onclick="showToast('오늘 19:00 - 재희 라이브 방송 💖')" class="flex flex-col items-center group cursor-pointer">
+                        <div class="w-14 h-14 bg-white ios-icon flex flex-col items-center justify-center overflow-hidden">
+                            <div class="bg-red-500 w-full text-[8px] text-white text-center font-bold py-0.5">수요일</div>
+                            <span class="text-xl font-bold text-slate-800 leading-none my-0.5">21</span>
+                        </div>
+                        <span class="text-[11px] text-white font-medium mt-1.5 drop-shadow-md">캘린더</span>
+                    </div>
+
+                    <!-- Camera App -->
+                    <div onclick="openApp('gallery')" class="flex flex-col items-center group cursor-pointer">
+                        <div class="w-14 h-14 bg-slate-300 ios-icon flex items-center justify-center text-slate-800">
+                            <i class="fa-solid fa-camera text-2xl"></i>
+                        </div>
+                        <span class="text-[11px] text-white font-medium mt-1.5 drop-shadow-md">카메라</span>
+                    </div>
+
+                    <!-- Clock / Alarm -->
+                    <div onclick="showToast('알람: 오전 07:00 (재희 모닝콜)')" class="flex flex-col items-center group cursor-pointer">
+                        <div class="w-14 h-14 bg-slate-900 ios-icon flex items-center justify-center text-amber-400 border border-slate-700">
+                            <i class="fa-solid fa-clock text-2xl"></i>
+                        </div>
+                        <span class="text-[11px] text-white font-medium mt-1.5 drop-shadow-md">시계</span>
+                    </div>
+
+                    <!-- Love Secret App -->
+                    <div onclick="triggerHeartBurst()" class="flex flex-col items-center group cursor-pointer">
+                        <div class="w-14 h-14 bg-pink-500 ios-icon flex items-center justify-center text-white border-2 border-pink-300">
+                            <i class="fa-solid fa-heart text-2xl animate-pulse"></i>
+                        </div>
+                        <span class="text-[11px] text-white font-medium mt-1.5 drop-shadow-md">재희 하트</span>
+                    </div>
+                </div>
+
+                <!-- Page Indicator Dots -->
+                <div class="flex justify-center space-x-1.5 my-2">
+                    <div class="w-1.5 h-1.5 bg-white rounded-full"></div>
+                    <div class="w-1.5 h-1.5 bg-white/40 rounded-full"></div>
+                </div>
+
+                <!-- Bottom iOS Dock -->
+                <div class="ios-dock-glass p-3 rounded-[32px] flex justify-around items-center mb-1">
+                    <div onclick="openApp('phone')" class="w-13 h-13 bg-gradient-to-b from-green-400 to-green-600 ios-icon flex items-center justify-center text-white cursor-pointer">
+                        <i class="fa-solid fa-phone text-xl"></i>
+                    </div>
+                    <div onclick="openApp('kakaotalk')" class="w-13 h-13 bg-[#FEE500] ios-icon flex items-center justify-center text-[#3C1E1E] cursor-pointer">
+                        <i class="fa-solid fa-comment text-xl"></i>
+                    </div>
+                    <div onclick="showToast('Safari: 재희 공식 팬카페 접속 중...')" class="w-13 h-13 bg-blue-500 ios-icon flex items-center justify-center text-white cursor-pointer">
+                        <i class="fa-solid fa-compass text-xl"></i>
+                    </div>
+                    <div onclick="openApp('gallery')" class="w-13 h-13 bg-slate-200 ios-icon flex items-center justify-center text-slate-800 cursor-pointer">
+                        <i class="fa-solid fa-images text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- APP 1: KAKAOTALK / MESSAGES -->
+            <!-- ========================================================= -->
+            <div id="app-kakaotalk" class="absolute inset-0 z-40 bg-[#abc1d1] flex flex-col hidden ios-slide">
+                <!-- App Navigation Header -->
+                <div class="bg-[#abc1d1]/95 backdrop-blur-md px-4 pt-10 pb-2.5 flex items-center justify-between border-b border-black/5">
+                    <button onclick="closeApp()" class="text-slate-800 text-lg p-1 active:opacity-50">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <div class="text-center">
+                        <div class="flex items-center justify-center gap-1">
+                            <h2 id="chat-title-name" class="font-bold text-sm text-slate-900">재희</h2>
+                            <i class="fa-solid fa-heart text-xs text-pink-500"></i>
+                        </div>
+                        <span class="text-[9px] text-slate-600 font-medium">활동 중</span>
+                    </div>
+                    <button onclick="startVoiceCall()" class="text-slate-800 text-base p-1 active:opacity-50">
+                        <i class="fa-solid fa-phone"></i>
+                    </button>
+                </div>
+
+                <!-- Chat Timeline Area -->
+                <div id="chat-messages-container" class="flex-1 overflow-y-auto p-4 space-y-3.5">
+                    <!-- Date Badge -->
+                    <div class="flex justify-center my-1">
+                        <span class="bg-black/15 text-white text-[10px] px-3 py-0.5 rounded-full font-medium">2026년 10월 21일 수요일</span>
+                    </div>
+
+                    <!-- Dynamic Chat Messages Inserted via JS -->
+                </div>
+
+                <!-- Typing Indicator Banner -->
+                <div id="typing-indicator" class="hidden px-4 py-1 text-[11px] text-slate-600 flex items-center space-x-1 font-medium bg-[#abc1d1]">
+                    <span>재희님이 입력 중입니다</span>
+                    <span class="animate-bounce">.</span><span class="animate-bounce" style="animation-delay: 0.2s">.</span><span class="animate-bounce" style="animation-delay: 0.4s">.</span>
+                </div>
+
+                <!-- Quick Preset Replies Panel -->
+                <div class="bg-slate-100/90 backdrop-blur p-2 border-t border-slate-200">
+                    <div class="text-[10px] text-slate-500 mb-1 px-1 font-semibold flex justify-between">
+                        <span>빠른 답장 선택:</span>
+                        <span class="text-pink-500">탭하여 전송</span>
+                    </div>
+                    <div id="quick-replies-list" class="flex gap-1.5 overflow-x-auto pb-1">
+                        <!-- Reply buttons rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- Text Input Bar -->
+                <div class="bg-white p-2.5 flex items-center gap-2 border-t border-slate-200">
+                    <button class="text-slate-400 hover:text-slate-600 px-1"><i class="fa-solid fa-plus text-lg"></i></button>
+                    <input id="chat-input-field" type="text" placeholder="메시지 보낼 내용을 입력하세요..." class="flex-1 bg-slate-100 text-xs px-3.5 py-2 rounded-full outline-none focus:ring-1 focus:ring-yellow-400" onkeypress="handleChatKeyPress(event)">
+                    <button onclick="sendUserCustomMessage()" class="bg-[#FEE500] text-[#3C1E1E] font-bold text-xs px-3.5 py-1.5 rounded-full hover:bg-yellow-400 active:scale-95 transition-all shadow-sm">전송</button>
+                </div>
+
+                <!-- iOS Home Bar Bottom Spacer -->
+                <div class="bg-white pb-2 flex justify-center">
+                    <div onclick="closeApp()" class="w-32 h-1 bg-slate-300 rounded-full cursor-pointer"></div>
+                </div>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- APP 2: iOS VOICE CALL -->
+            <!-- ========================================================= -->
+            <div id="app-phone" class="absolute inset-0 z-40 bg-slate-950 text-white flex flex-col justify-between p-6 hidden ios-slide">
+                <!-- Top Status Header -->
+                <div class="pt-8 text-center">
+                    <span id="call-status-label" class="text-xs text-slate-400 font-medium tracking-wide">iOS Voice Call</span>
+                    <h2 id="call-jaehee-name" class="text-3xl font-bold mt-1 tracking-tight">재희 💜</h2>
+                    <span id="call-timer-display" class="text-sm font-mono text-green-400 mt-1 block font-semibold">00:00</span>
+                </div>
+
+                <!-- Central Avatar & Voice Subtitle -->
+                <div class="flex flex-col items-center justify-center my-auto">
+                    <div class="relative">
+                        <img id="call-jaehee-avatar" src="" class="w-36 h-36 rounded-full object-cover border-4 border-pink-500/40 shadow-2xl animate-pulse" alt="재희 통화 프로필">
+                        <div class="absolute -bottom-2 bg-pink-500 text-white text-[9px] font-extrabold px-3 py-0.5 rounded-full left-1/2 -translate-x-1/2 tracking-wider shadow">
+                            CONNECTED
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Dialogue Subtitle Box -->
+                    <div id="call-subtitle-box" class="mt-8 ios-glass-dark px-5 py-3 rounded-2xl text-center text-xs text-pink-200 max-w-xs transition-all border border-pink-500/30 shadow-lg">
+                        "여보세요? 전화해 줘서 고마워!"
+                    </div>
+                </div>
+
+                <!-- iOS Call Controls Grid -->
+                <div class="space-y-6 mb-6">
+                    <div class="grid grid-cols-3 gap-6 text-center max-w-xs mx-auto">
+                        <button onclick="toggleCallMute(this)" class="flex flex-col items-center space-y-1 group">
+                            <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-xl group-active:bg-white group-active:text-black transition-all">
+                                <i class="fa-solid fa-microphone-slash"></i>
+                            </div>
+                            <span class="text-[10px] text-slate-300">음소거</span>
+                        </button>
+                        <button onclick="showToast('키패드 기능 준비 중')" class="flex flex-col items-center space-y-1 group">
+                            <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-xl group-active:bg-white group-active:text-black transition-all">
+                                <i class="fa-solid fa-border-all"></i>
+                            </div>
+                            <span class="text-[10px] text-slate-300">키패드</span>
+                        </button>
+                        <button onclick="toggleCallSpeaker(this)" class="flex flex-col items-center space-y-1 group">
+                            <div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-xl group-active:bg-white group-active:text-black transition-all">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </div>
+                            <span class="text-[10px] text-slate-300">스피커</span>
+                        </button>
+                    </div>
+
+                    <!-- End Call Button -->
+                    <div class="flex justify-center">
+                        <button onclick="endVoiceCall()" class="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center text-2xl text-white shadow-lg active:scale-90 transition-transform">
+                            <i class="fa-solid fa-phone-flip rotate-[135deg]"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Home Bar Bottom -->
+                <div onclick="closeApp()" class="w-32 h-1 bg-white/40 rounded-full mx-auto cursor-pointer"></div>
+            </div>
+
+            <!-- ========================================================= -->
+            <!-- APP 3: iOS PHOTOS GALLERY -->
+            <!-- ========================================================= -->
+            <div id="app-gallery" class="absolute inset-0 z-40 bg-black text-white flex flex-col hidden ios-slide">
+                <!-- Gallery Header -->
+                <div class="pt-10 pb-3 px-4 flex items-center justify-between border-b border-white/10 bg-black/80 backdrop-blur-md">
+                    <button onclick="closeApp()" class="text-pink-400 text-sm font-semibold flex items-center gap-1">
+                        <i class="fa-solid fa-chevron-left"></i> 홈
+                    </button>
+                    <h2 class="font-bold text-sm">재희의 사진첩 📸</h2>
+                    <span class="text-xs text-slate-400">포토북</span>
+                </div>
+
+                <!-- Gallery Photo Grid -->
+                <div class="flex-1 overflow-y-auto p-2">
+                    <div id="gallery-grid" class="grid grid-cols-3 gap-1.5">
+                        <!-- Photo items dynamically loaded from CONFIG -->
+                    </div>
+                </div>
+
+                <!-- Bottom Bar -->
+                <div class="p-3 bg-slate-900 border-t border-slate-800 flex justify-center items-center">
+                    <div onclick="closeApp()" class="w-32 h-1 bg-white/30 rounded-full cursor-pointer"></div>
+                </div>
+            </div>
+
+            <!-- Lightbox Fullscreen Photo Modal -->
+            <div id="photo-modal" class="absolute inset-0 z-50 bg-black/95 flex flex-col justify-between hidden transition-opacity duration-300">
+                <div class="pt-10 px-4 flex justify-between items-center text-white">
+                    <span id="modal-photo-caption" class="text-xs font-medium text-slate-300">사진 보기</span>
+                    <button onclick="closePhotoModal()" class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                
+                <div class="my-auto flex items-center justify-center p-4">
+                    <img id="modal-photo-img" src="" class="max-h-[500px] w-auto rounded-2xl object-contain shadow-2xl" alt="재희 사진">
+                </div>
+
+                <div class="pb-8 px-6 flex justify-around items-center text-white text-xl">
+                    <button onclick="togglePhotoLike(this)" class="hover:text-pink-500 transition-colors">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                    <button onclick="showToast('사진이 저장되었습니다!')" class="hover:text-blue-400 transition-colors">
+                        <i class="fa-solid fa-download"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Toast Message Notification -->
+            <div id="toast-msg" class="absolute top-12 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 text-white text-xs px-4 py-2 rounded-full border border-slate-700 shadow-xl opacity-0 pointer-events-none transition-all duration-300">
+                알림 메시지
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- JAVASCRIPT LOGIC & CONFIGURATION -->
+    <!-- ========================================================= -->
+    <script>
+        /* 
+        ===================================================================
+        [CONFIG: 재희 폰 커스텀 설정 객체]
+        이 영역의 값(이름, 프로필 사진, 배경화면, 대화 목록 등)을 변경하여
+        원하는 아이돌 및 컨셉으로 손쉽게 변경하실 수 있습니다.
+        ===================================================================
+        */
+        const CONFIG = {
+            idolName: "재희",
+            idolEmoji: "💜",
+            statusMessage: "오늘 하루도 파이팅! 💖",
+            avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop",
+            lockWallpaper: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop",
+            
+            // 초기 대화 및 프리셋 답장
+            chatData: [
+                { id: 1, sender: "jaehee", text: "안녕! 오늘 하루 잘 보내고 있어? 💜", time: "오후 12:30" },
+                { id: 2, sender: "jaehee", text: "날씨 너무 좋은데 뭐하고 있는지 궁금해서 카톡 했어!", time: "오후 12:31" }
+            ],
+            
+            presetReplies: [
+                { label: "밥 먹었어?", response: "방금 멤버들이랑 맛있는 거 먹었지! 너도 밥 꼭 챙겨 먹어야 해 🍱" },
+                { label: "지금 뭐해?", response: "연습실에서 연습하다가 쉬는 시간에 네 생각나서 메시지 보내는 중! 🎶" },
+                { label: "셀카 보여줘!", response: "짜잔! 방금 찍은 셀카야. 마음에 들었으면 좋겠다 📸" },
+                { label: "보고 싶어 💖", response: "나도 너무너무 보고 싶어! 조만간 팬사인회/무대에서 꼭 보자 ✨" }
+            ],
+
+            // 음성 통화 시 재생되는 자막 멘트 순서
+            callSubtitles: [
+                "여보세요? 전화 받아줘서 너무 기뻐! 💜",
+                "오늘 따라 네 목소리가 보고 싶더라고!",
+                "식사는 잘 챙겨 먹었어? 아프지 말고 건강해야 해!",
+                "항상 응원해 줘서 고마워. 내가 더 잘할게!",
+                "조만간 좋은 소식으로 찾아갈 테니 기대해 줘 ✨"
+            ],
+
+            // 사진첩 모음 이미지
+            galleryPhotos: [
+                "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=400&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=400&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop",
+                "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=400&auto=format&fit=crop"
+            ]
+        };
+
+        // State variables
+        let isLocked = true;
+        let activeApp = null;
+        let callInterval = null;
+        let callSeconds = 0;
+        let currentSubtitleIdx = 0;
+        let subtitleInterval = null;
+
+        // Initialize App on DOM Content Loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initSystemInfo();
+            updateClocks();
+            setInterval(updateClocks, 1000);
+            renderChatMessages();
+            renderQuickReplies();
+            renderGallery();
+        });
+
+        // Initialize Dynamic Config Settings to DOM
+        function initSystemInfo() {
+            document.getElementById('lock-jaehee-avatar').src = CONFIG.avatarUrl;
+            document.getElementById('lock-jaehee-name').innerText = CONFIG.idolName;
+            document.getElementById('chat-title-name').innerText = CONFIG.idolName;
+            document.getElementById('call-jaehee-name').innerText = `${CONFIG.idolName} ${CONFIG.idolEmoji}`;
+            document.getElementById('call-jaehee-avatar').src = CONFIG.avatarUrl;
+            document.getElementById('phone-screen').style.backgroundImage = `url('${CONFIG.lockWallpaper}')`;
+        }
+
+        // Live Clock Updates (KST Standard Time)
+        function updateClocks() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const timeStr = `${hours}:${minutes}`;
+
+            document.getElementById('status-clock').innerText = timeStr;
+            document.getElementById('lock-clock').innerText = timeStr;
+
+            const months = now.getMonth() + 1;
+            const dates = now.getDate();
+            const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+            const dayName = days[now.getDay()];
+            document.getElementById('lock-date').innerText = `${months}월 ${dates}일 ${dayName}`;
+        }
+
+        // Unlock Phone Animation
+        function unlockPhone() {
+            if (!isLocked) return;
+            isLocked = false;
+
+            const lockScreen = document.getElementById('lock-screen');
+            const homeScreen = document.getElementById('home-screen');
+
+            lockScreen.classList.add('-translate-y-full', 'opacity-0');
+            setTimeout(() => {
+                lockScreen.classList.add('hidden');
+                homeScreen.classList.remove('hidden');
+            }, 300);
+        }
+
+        function unlockToApp(appName) {
+            unlockPhone();
+            setTimeout(() => {
+                openApp(appName);
+            }, 350);
+        }
+
+        // Open App Handler
+        function openApp(appName) {
+            activeApp = appName;
+            const targetApp = document.getElementById(`app-${appName}`);
+            if (targetApp) {
+                targetApp.classList.remove('hidden');
+                
+                if (appName === 'kakaotalk') {
+                    // Reset unread badge
+                    document.getElementById('unread-badge').classList.add('hidden');
+                    scrollChatToBottom();
+                } else if (appName === 'phone') {
+                    startVoiceCall();
+                }
+            }
+        }
+
+        // Close App Handler
+        function closeApp() {
+            if (activeApp === 'phone') {
+                endVoiceCall();
+            }
+            if (activeApp) {
+                const targetApp = document.getElementById(`app-${activeApp}`);
+                if (targetApp) {
+                    targetApp.classList.add('hidden');
+                }
+                activeApp = null;
+            }
+        }
+
+        // Chat Rendering Functions
+        function renderChatMessages() {
+            const container = document.getElementById('chat-messages-container');
+            // Retain date separator
+            container.innerHTML = `
+                <div class="flex justify-center my-1">
+                    <span class="bg-black/15 text-white text-[10px] px-3 py-0.5 rounded-full font-medium">2026년 10월 21일 수요일</span>
+                </div>
+            `;
+
+            CONFIG.chatData.forEach(msg => {
+                appendSingleBubble(msg);
+            });
+            scrollChatToBottom();
+        }
+
+        function appendSingleBubble(msg) {
+            const container = document.getElementById('chat-messages-container');
+            const isJaehee = msg.sender === 'jaehee';
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex ${isJaehee ? 'justify-start' : 'justify-end'} items-start space-x-2 my-2`;
+
+            if (isJaehee) {
+                wrapper.innerHTML = `
+                    <img src="${CONFIG.avatarUrl}" class="w-9 h-9 rounded-2xl object-cover shadow-sm mt-0.5 border border-white/50" alt="재희">
+                    <div class="max-w-[70%]">
+                        <span class="text-[10px] text-slate-700 font-bold block mb-1 ml-0.5">${CONFIG.idolName}</span>
+                        <div class="relative bg-white text-slate-900 text-xs px-3.5 py-2.5 rounded-2xl shadow-sm border border-slate-100 chat-bubble-received">
+                            ${msg.text}
+                        </div>
+                        <span class="text-[9px] text-slate-500 mt-1 block ml-1">${msg.time}</span>
+                    </div>
+                `;
+            } else {
+                wrapper.innerHTML = `
+                    <div class="max-w-[70%] flex flex-col items-end">
+                        <div class="relative bg-[#FEE500] text-[#3C1E1E] font-medium text-xs px-3.5 py-2.5 rounded-2xl shadow-sm chat-bubble-sent">
+                            ${msg.text}
+                        </div>
+                        <span class="text-[9px] text-slate-500 mt-1 mr-1">${msg.time}</span>
+                    </div>
+                `;
+            }
+
+            container.appendChild(wrapper);
+            scrollChatToBottom();
+        }
+
+        function renderQuickReplies() {
+            const list = document.getElementById('quick-replies-list');
+            list.innerHTML = '';
+            
+            CONFIG.presetReplies.forEach(reply => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-white hover:bg-yellow-100 text-slate-800 text-[11px] font-medium px-3 py-1.5 rounded-full border border-slate-200 whitespace-nowrap active:scale-95 transition-all shadow-xs flex-shrink-0';
+                btn.innerText = reply.label;
+                btn.onclick = () => sendUserPresetReply(reply.label, reply.response);
+                list.appendChild(btn);
+            });
+        }
+
+        function sendUserPresetReply(userText, jaeheeResponse) {
+            const now = new Date();
+            const timeStr = `${now.getHours() > 12 ? '오후' : '오전'} ${now.getHours() % 12 || 12}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            // 1. Add user message
+            CONFIG.chatData.push({ id: Date.now(), sender: 'user', text: userText, time: timeStr });
+            appendSingleBubble({ sender: 'user', text: userText, time: timeStr });
+
+            // 2. Show Jaehee Typing indicator
+            document.getElementById('typing-indicator').classList.remove('hidden');
+            scrollChatToBottom();
+
+            setTimeout(() => {
+                document.getElementById('typing-indicator').classList.add('hidden');
+                CONFIG.chatData.push({ id: Date.now() + 1, sender: 'jaehee', text: jaeheeResponse, time: timeStr });
+                appendSingleBubble({ sender: 'jaehee', text: jaeheeResponse, time: timeStr });
+            }, 1200);
+        }
+
+        function sendUserCustomMessage() {
+            const input = document.getElementById('chat-input-field');
+            const val = input.value.trim();
+            if (!val) return;
+
+            input.value = '';
+            sendUserPresetReply(val, "메시지 고마워! 네 글 보니까 힘이 난다 ✨ 곧 또 답장할게!");
+        }
+
+        function handleChatKeyPress(e) {
+            if (e.key === 'Enter') sendUserCustomMessage();
+        }
+
+        function scrollChatToBottom() {
+            const container = document.getElementById('chat-messages-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Voice Call Logic
+        function startVoiceCall() {
+            callSeconds = 0;
+            currentSubtitleIdx = 0;
+            
+            document.getElementById('call-timer-display').innerText = "00:00";
+            document.getElementById('call-subtitle-box').innerText = `"${CONFIG.callSubtitles[0]}"`;
+
+            // Dynamic Island active state
+            document.getElementById('island-active-content').classList.remove('hidden');
+            document.getElementById('dynamic-island').classList.add('island-pulse');
+
+            // Timer Interval
+            clearInterval(callInterval);
+            callInterval = setInterval(() => {
+                callSeconds++;
+                const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+                const secs = String(callSeconds % 60).padStart(2, '0');
+                const formatted = `${mins}:${secs}`;
+                
+                document.getElementById('call-timer-display').innerText = formatted;
+                document.getElementById('island-status-text').innerText = `${CONFIG.idolName} ${formatted}`;
+            }, 1000);
+
+            // Subtitle Rotation
+            clearInterval(subtitleInterval);
+            subtitleInterval = setInterval(() => {
+                currentSubtitleIdx = (currentSubtitleIdx + 1) % CONFIG.callSubtitles.length;
+                document.getElementById('call-subtitle-box').innerText = `"${CONFIG.callSubtitles[currentSubtitleIdx]}"`;
+            }, 4000);
+        }
+
+        function endVoiceCall() {
+            clearInterval(callInterval);
+            clearInterval(subtitleInterval);
+
+            document.getElementById('island-active-content').classList.add('hidden');
+            document.getElementById('dynamic-island').classList.remove('island-pulse');
+
+            if (activeApp === 'phone') {
+                closeApp();
+            }
+            showToast('통화가 종료되었습니다.');
+        }
+
+        function toggleCallMute(btn) {
+            btn.querySelector('div').classList.toggle('bg-white');
+            btn.querySelector('div').classList.toggle('text-black');
+            showToast('마이크 상태 변경');
+        }
+
+        function toggleCallSpeaker(btn) {
+            btn.querySelector('div').classList.toggle('bg-white');
+            btn.querySelector('div').classList.toggle('text-black');
+            showToast('스피커 모드 전환');
+        }
+
+        // Dynamic Island Click Handler
+        function handleDynamicIslandClick() {
+            if (callInterval) {
+                openApp('phone');
+            } else {
+                showToast(`재희 폰 Dynamic Island 💖`);
+            }
+        }
+
+        // Photos Gallery Rendering
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = '';
+
+            CONFIG.galleryPhotos.forEach((photoUrl, idx) => {
+                const item = document.createElement('div');
+                item.className = 'aspect-square bg-slate-800 rounded-lg overflow-hidden cursor-pointer active:scale-95 transition-transform shadow-sm';
+                item.innerHTML = `<img src="${photoUrl}" class="w-full h-full object-cover" alt="재희 사진 ${idx+1}">`;
+                item.onclick = () => openPhotoModal(photoUrl, `재희 포토 #${idx + 1}`);
+                grid.appendChild(item);
+            });
+        }
+
+        function openPhotoModal(imgUrl, caption) {
+            document.getElementById('modal-photo-img').src = imgUrl;
+            document.getElementById('modal-photo-caption').innerText = caption;
+            document.getElementById('photo-modal').classList.remove('hidden');
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photo-modal').classList.add('hidden');
+        }
+
+        function togglePhotoLike(btn) {
+            const icon = btn.querySelector('i');
+            if (icon.classList.contains('fa-regular')) {
+                icon.className = 'fa-solid fa-heart text-pink-500 animate-bounce';
+                showToast('좋아요를 남겼습니다 💖');
+            } else {
+                icon.className = 'fa-regular fa-heart';
+            }
+        }
+
+        // Secret Heart Burst Animation
+        function triggerHeartBurst() {
+            showToast(`${CONFIG.idolName}의 사랑이 도착했습니다! 💜`);
+            for (let i = 0; i < 12; i++) {
+                createFloatingHeart();
+            }
+        }
+
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'absolute text-pink-500 text-xl pointer-events-none z-50 animate-ping';
+            heart.style.left = `${Math.random() * 80 + 10}%`;
+            heart.style.top = `${Math.random() * 80 + 10}%`;
+            heart.innerHTML = '💖';
+            document.getElementById('phone-screen').appendChild(heart);
+
+            setTimeout(() => heart.remove(), 1000);
+        }
+
+        // Flashlight Toggle Simulation
+        function toggleTorch() {
+            const btn = document.getElementById('torch-btn');
+            btn.classList.toggle('bg-white');
+            btn.classList.toggle('text-black');
+            showToast(btn.classList.contains('bg-white') ? '손전등 켜짐' : '손전등 꺼짐');
+        }
+
+        // Toast Helper
+        function showToast(text) {
+            const toast = document.getElementById('toast-msg');
+            toast.innerText = text;
+            toast.classList.remove('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'pointer-events-none');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
