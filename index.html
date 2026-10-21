@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17151c">
+<title>JAEHEE PHONE · fanmade</title>
+<style>
+:root{
+  --ink:#17151c;--muted:#8b8792;--glass:rgba(255,255,255,.72);
+  --pink:#f4dce8;--lav:#dcd9f5;--blue:#a8d7ff;--green:#bfe8ce;
+  --safe-top:env(safe-area-inset-top, 0px);--safe-bottom:env(safe-area-inset-bottom, 0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;color:var(--ink);background:#17151c;overscroll-behavior:none}
+button,input,textarea{font:inherit}
+button{border:0;cursor:pointer}
+#stage{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:0;background:radial-gradient(ellipse at 30% 20%,#4d394f,#191821 60%,#101014)}
+.phone{position:relative;width:min(100vw,393px);height:min(100dvh,852px);overflow:hidden;background:#f6eff4;isolation:isolate}
+@media(min-width:500px){.phone{height:min(852px,94dvh);border:7px solid #29282d;border-radius:54px;box-shadow:0 28px 90px #0008}.phone:after{content:"";position:absolute;inset:0;border:1px solid #ffffff38;border-radius:47px;pointer-events:none;z-index:100}}
+.wallpaper{position:absolute;inset:0;background:radial-gradient(ellipse at 18% 22%,#fff8 0 8%,transparent 32%),radial-gradient(ellipse at 90% 38%,#fff8 0 7%,transparent 30%),radial-gradient(ellipse at 50% 88%,#e8c2d7 0 12%,transparent 44%),linear-gradient(145deg,#f2d9e5,#d8d8f2 48%,#f8e9e9);transition:filter .3s}
+.wallpaper:before,.wallpaper:after{content:"";position:absolute;border-radius:50%;filter:blur(2px);background:#fff4}
+.wallpaper:before{width:70vw;height:70vw;max-width:340px;max-height:340px;left:-100px;top:23%;box-shadow:140px 180px 0 15px #e7c3d5aa}
+.wallpaper:after{width:240px;height:240px;right:-90px;top:7%;background:#d5c8f1aa}
+.status{position:absolute;z-index:30;top:0;left:0;right:0;height:46px;padding:calc(var(--safe-top) + 10px) 25px 0;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:650;color:#17151c}
+.status .right{display:flex;align-items:center;gap:6px;font-size:12px}
+.island{position:absolute;top:9px;left:50%;transform:translateX(-50%);height:29px;width:112px;border-radius:20px;background:#08080a;z-index:31;box-shadow:0 1px 1px #fff2}
+.signal{display:inline-flex;align-items:end;gap:2px;height:12px}.signal i{display:block;width:3px;background:currentColor;border-radius:1px}.signal i:nth-child(1){height:4px}.signal i:nth-child(2){height:6px}.signal i:nth-child(3){height:9px}.signal i:nth-child(4){height:11px}
+.battery{width:20px;height:10px;border:1.4px solid currentColor;border-radius:3px;position:relative}.battery:before{content:"";position:absolute;left:2px;top:2px;bottom:2px;width:12px;border-radius:1px;background:currentColor}.battery:after{content:"";position:absolute;right:-3px;top:2px;height:4px;width:2px;background:currentColor;border-radius:0 2px 2px 0}
+.screen{position:absolute;inset:0;display:none;overflow:hidden;z-index:2}.screen.active{display:block}.lock{z-index:10;color:white;text-align:center;background:linear-gradient(#221b2870,#221b2810 45%,#251b3850)}.lock .status{color:white}
+.lock-date{position:absolute;top:18%;left:0;right:0;font-size:17px;font-weight:550;text-shadow:0 1px 10px #0002}
+.lock-clock{position:absolute;top:21%;left:0;right:0;font-size:clamp(78px,23vw,104px);font-weight:250;letter-spacing:-5px;line-height:1.1;text-shadow:0 2px 18px #0002}
+.lock-greeting{position:absolute;top:43%;left:12%;right:12%;font-size:15px;line-height:1.5;text-shadow:0 1px 8px #0002}
+.lock-bottom{position:absolute;bottom:calc(32px + var(--safe-bottom));left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 35px}
+.round-control{width:48px;height:48px;border-radius:50%;background:#2223;backdrop-filter:blur(16px);color:white;font-size:21px;border:1px solid #fff4;display:grid;place-items:center}
+.lock-hint{position:absolute;bottom:calc(12px + var(--safe-bottom));left:0;right:0;font-size:11px;opacity:.85}
+.home{background:transparent}.home .status{color:#24212a}
+.app-grid{position:absolute;top:calc(78px + var(--safe-top));left:20px;right:20px;display:grid;grid-template-columns:repeat(4,1fr);column-gap:9px;row-gap:23px}
+.app-icon{display:flex;flex-direction:column;align-items:center;gap:6px;color:#211e26;font-size:11px;text-shadow:0 1px 4px #fff7;min-width:0;background:none;padding:0}
+.icon-tile{width:clamp(48px,15vw,63px);height:clamp(48px,15vw,63px);border-radius:15px;display:grid;place-items:center;font-size:29px;box-shadow:0 4px 12px #44344822,inset 0 1px 0 #fff9;position:relative;overflow:hidden}
+.icon-tile:before{content:"";position:absolute;inset:0;background:linear-gradient(145deg,#fff8,transparent 55%);pointer-events:none}
+.icon-tile span{position:relative}
+.tile-message{background:linear-gradient(150deg,#bdeec8,#5bc47c)}.tile-phone{background:linear-gradient(150deg,#b6f0c5,#39b85c)}.tile-photos{background:linear-gradient(145deg,#fff,#f5d3de 50%,#9fcaed)}.tile-notes{background:linear-gradient(150deg,#fff8bf,#f2dc72)}.tile-settings{background:linear-gradient(145deg,#d6d6dc,#898b98)}.tile-camera{background:linear-gradient(145deg,#555,#111);color:white}.tile-music{background:linear-gradient(145deg,#ffc4d9,#d94e84);color:white}.tile-calendar{background:#fff;color:#de4b54}.tile-calendar small{font-size:9px;color:#e54e5b}.tile-calendar strong{font-size:25px}.tile-weather{background:linear-gradient(145deg,#9bd8fa,#638de6)}
+.dock{position:absolute;bottom:calc(18px + var(--safe-bottom));left:16px;right:16px;height:94px;border-radius:28px;background:#ffffff70;backdrop-filter:blur(24px);display:flex;align-items:center;justify-content:space-evenly;padding:10px}
+.dock .icon-tile{width:58px;height:58px}
+.home-indicator{position:absolute;z-index:50;bottom:calc(7px + var(--safe-bottom));left:50%;transform:translateX(-50%);width:135px;height:5px;border-radius:10px;background:#16151b}
+.app-screen{background:#f8f7fa;color:#17151c;z-index:20}
+.app-header{height:94px;padding:calc(var(--safe-top) + 49px) 20px 10px;display:flex;align-items:center;justify-content:space-between;background:#f8f7faeF;backdrop-filter:blur(18px);position:relative;z-index:3}
+.app-title{font-size:27px;font-weight:750;letter-spacing:-.8px}.header-action{background:#e9e5ef;color:#6b5d7d;border-radius:20px;padding:8px 12px;font-size:13px;font-weight:650}
+.app-content{height:calc(100% - 94px);overflow:auto;padding:10px 16px calc(35px + var(--safe-bottom));overscroll-behavior:contain}
+.section-label{font-size:13px;color:#8b8792;font-weight:650;margin:14px 4px 8px;text-transform:uppercase;letter-spacing:.4px}
+.list-card{background:white;border-radius:17px;overflow:hidden;box-shadow:0 1px 2px #21162a0c;margin-bottom:12px}
+.list-row{display:flex;align-items:center;gap:12px;padding:13px 14px;min-height:60px;border-bottom:1px solid #f0edf2;cursor:pointer;background:white;text-align:left;width:100%;color:inherit}.list-row:last-child{border-bottom:0}
+.avatar{width:43px;height:43px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#f3cfe0,#d9d5f4);font-size:20px;flex:none}
+.row-main{flex:1;min-width:0}.row-title{font-size:15px;font-weight:650}.row-sub{font-size:12px;color:#8b8792;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.row-time{font-size:11px;color:#aaa3ae;align-self:flex-start;padding-top:3px}
+.chat-thread{display:flex;flex-direction:column;gap:9px;padding:8px 2px 20px}.bubble{max-width:82%;padding:10px 13px;border-radius:19px;font-size:15px;line-height:1.35;white-space:pre-wrap;overflow-wrap:anywhere}.bubble.in{align-self:flex-start;background:#e8e6eb;border-bottom-left-radius:6px}.bubble.out{align-self:flex-end;background:#a9e8a7;border-bottom-right-radius:6px}
+.composer{position:absolute;bottom:calc(16px + var(--safe-bottom));left:12px;right:12px;display:flex;gap:8px;align-items:end;background:#f8f7faeF;padding:8px 4px;z-index:4}
+.composer input,.composer textarea{flex:1;min-width:0;border:1px solid #e5e0e8;background:white;border-radius:22px;padding:11px 14px;outline:none;resize:none;max-height:100px}.send{width:38px;height:38px;border-radius:50%;background:#69c879;color:white;font-size:20px;font-weight:700}
+.back{font-size:15px;color:#8a669f;background:none;padding:8px 0}
+.note-card{width:100%;text-align:left;background:white;border-radius:15px;padding:15px;margin-bottom:10px;box-shadow:0 1px 2px #21162a0c;color:inherit}.note-card strong{display:block;margin-bottom:6px}.note-card small{color:#928b96}
+.note-editor{width:100%;height:58vh;border:0;resize:none;outline:none;background:transparent;font-size:16px;line-height:1.6;padding:10px 2px}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}.photo{aspect-ratio:1;border-radius:7px;background:linear-gradient(145deg,#f4d9e6,#c9d9f2,#f4e6ce);display:grid;place-items:center;font-size:31px;cursor:pointer}.photo:nth-child(3n+2){background:linear-gradient(145deg,#e2d7f3,#f5d6df)}.photo:nth-child(3n){background:linear-gradient(145deg,#f5e8bd,#e6b8cc)}
+.photo-view{position:absolute;inset:0;background:#141219;z-index:40;display:none;align-items:center;justify-content:center;color:white;font-size:70px}.photo-view.show{display:flex}.photo-view button{position:absolute;top:calc(20px + var(--safe-top));left:20px;color:white;background:#ffffff24;border-radius:18px;padding:9px 13px}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:290px;margin:25px auto}.key{height:66px;border-radius:50%;background:#ffffffb5;font-size:27px;color:#211d27;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 1px 3px #0001}.key small{font-size:9px;letter-spacing:1px;margin-top:1px}.pin-dots{display:flex;justify-content:center;gap:14px;margin:25px 0}.pin-dot{width:10px;height:10px;border-radius:50%;border:1px solid #fff;background:transparent}.pin-dot.filled{background:#fff}
+.passcode{z-index:15;background:linear-gradient(145deg,#b9a8c8,#e5c6d5 55%,#b8cce8);text-align:center;color:white}.passcode h2{font-size:21px;font-weight:600;margin:0}.passcode .key{background:#ffffff35;color:white;box-shadow:none;backdrop-filter:blur(10px)}.passcode .key small{color:white}.passcode .status{color:white}
+.toast{position:absolute;z-index:80;top:calc(58px + var(--safe-top));left:50%;transform:translateX(-50%);background:#222d;color:white;padding:10px 15px;border-radius:20px;font-size:12px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s}.toast.show{opacity:1}
+.call-screen{background:linear-gradient(155deg,#5e506b,#201d2b 70%);color:white;text-align:center;z-index:25;padding-top:calc(100px + var(--safe-top))}
+.call-avatar{margin:20px auto;width:120px;height:120px;border-radius:50%;background:linear-gradient(145deg,#f6dbe7,#c7c9ed);display:grid;place-items:center;font-size:60px;color:#4c3a52}
+.call-name{font-size:29px;font-weight:600}.call-sub{font-size:14px;color:#d0c7d6;margin-top:8px}.call-actions{position:absolute;bottom:calc(75px + var(--safe-bottom));left:25px;right:25px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.call-action{background:#ffffff24;color:white;border-radius:50%;width:58px;height:58px;margin:auto;font-size:23px}.end-call{position:absolute;bottom:calc(16px + var(--safe-bottom));left:50%;transform:translateX(-50%);width:65px;height:65px;background:#f04f54;color:white;border-radius:50%;font-size:27px}
+.settings-row{display:flex;align-items:center;gap:12px;background:white;padding:14px;border-bottom:1px solid #f0edf2}.settings-row:first-child{border-radius:15px 15px 0 0}.settings-row:last-child{border-radius:0 0 15px 15px;border:0}.settings-glyph{width:31px;height:31px;border-radius:8px;display:grid;place-items:center;color:white;background:#8e8f9b}
+.control{appearance:none;width:46px;height:28px;border-radius:20px;background:#d8d5dc;position:relative;transition:.2s}.control:checked{background:#42c66b}.control:before{content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;background:white;border-radius:50%;box-shadow:0 1px 3px #0002;transition:.2s}.control:checked:before{left:21px}
+.hidden{display:none!important}
+@media(max-height:650px){.app-grid{row-gap:12px;top:65px}.icon-tile{width:48px;height:48px}.dock{height:75px}.lock-clock{top:19%;font-size:76px}.lock-date{top:16%}}
+</style>
+</head>
+<body>
+<div id="stage">
+ <main class="phone" id="phone" aria-label="Jaehee fanmade iPhone">
+  <div class="wallpaper" id="wallpaper"></div>
+  <div class="status" id="status"><span id="statusTime">9:41</span><span class="right"><span class="signal"><i></i><i></i><i></i><i></i></span><span>Wi‑Fi</span><span class="battery"></span></span></div>
+  <div class="island"></div>
+
+  <section class="screen lock active" id="lockScreen">
+   <div class="lock-date" id="lockDate">10월 21일 수요일</div>
+   <div class="lock-clock" id="lockClock">9:41</div>
+   <div class="lock-greeting">JAEHEE PHONE ✦<br><span style="font-size:13px">오늘도 재희와 함께하는 하루 ♡</span></div>
+   <div class="lock-bottom"><button class="round-control" id="flashBtn" aria-label="손전등">⌁</button><button class="round-control" id="cameraQuick" aria-label="카메라">◉</button></div>
+   <div class="lock-hint">위로 쓸어올려 열기</div>
+  </section>
+
+  <section class="screen passcode" id="passcodeScreen">
+   <div style="padding-top:calc(100px + var(--safe-top))"><div style="font-size:45px;margin-bottom:15px">🔒</div><h2>암호 입력</h2><p style="font-size:13px;opacity:.85">팬메이드 화면 · 아무 4자리 숫자</p></div>
+   <div class="pin-dots" id="pinDots"><i class="pin-dot"></i><i class="pin-dot"></i><i class="pin-dot"></i><i class="pin-dot"></i></div>
+   <div class="keypad" id="pinPad"></div>
+   <button style="background:none;color:white;position:absolute;bottom:calc(35px + var(--safe-bottom));left:25px" id="cancelPin">취소</button>
+  </section>
+
+  <section class="screen home" id="homeScreen">
+   <div class="app-grid" id="appGrid">
+    <button class="app-icon" data-app="calendar"><span class="icon-tile tile-calendar"><span><small id="calDay">수</small><br><strong id="calNum">21</strong></span></span>캘린더</button>
+    <button class="app-icon" data-app="photos"><span class="icon-tile tile-photos"><span>🌈</span></span>사진</button>
+    <button class="app-icon" data-app="camera"><span class="icon-tile tile-camera"><span>📷</span></span>카메라</button>
+    <button class="app-icon" data-app="weather"><span class="icon-tile tile-weather"><span>☀️</span></span>날씨</button>
+    <button class="app-icon" data-app="messages"><span class="icon-tile tile-message"><span>💬</span></span>메시지</button>
+    <button class="app-icon" data-app="notes"><span class="icon-tile tile-notes"><span>📝</span></span>메모</button>
+    <button class="app-icon" data-app="settings"><span class="icon-tile tile-settings"><span>⚙️</span></span>설정</button>
+    <button class="app-icon" data-app="music"><span class="icon-tile tile-music"><span>♫</span></span>음악</button>
+   </div>
+   <div class="dock">
+    <button class="app-icon" data-app="phone"><span class="icon-tile tile-phone">☎</span></button>
+    <button class="app-icon" data-app="messages"><span class="icon-tile tile-message">💬</span></button>
+    <button class="app-icon" data-app="photos"><span class="icon-tile tile-photos">🌈</span></button>
+    <button class="app-icon" data-app="music"><span class="icon-tile tile-music">♫</span></button>
+   </div>
+  </section>
+
+  <section class="screen app-screen" id="messagesScreen">
+   <header class="app-header"><div><div style="font-size:12px;color:#8b8792;margin-bottom:3px">메시지</div><div class="app-title">대화</div></div><button class="header-action" id="newChat">편집</button></header>
+   <div class="app-content" id="messageList"></div>
+  </section>
+
+  <section class="screen app-screen" id="chatScreen">
+   <header class="app-header"><button class="back" id="chatBack">‹ 대화</button><div style="text-align:center"><div class="avatar" style="width:36px;height:36px;margin:auto;font-size:17px">🐰</div><div style="font-size:12px;font-weight:650;margin-top:3px">재희 ♡</div></div><button class="header-action" id="chatInfo">정보</button></header>
+   <div class="app-content" id="chatContent" style="height:calc(100% - 156px);padding-bottom:90px"></div>
+   <form class="composer" id="chatForm"><input id="chatInput" autocomplete="off" placeholder="iMessage"><button class="send" type="submit">↑</button></form>
+  </section>
+
+  <section class="screen app-screen" id="phoneScreen">
+   <header class="app-header"><div><div style="font-size:12px;color:#8b8792;margin-bottom:3px">즐겨찾기</div><div class="app-title">전화</div></div><button class="header-action" id="showDial">키패드</button></header>
+   <div class="app-content" id="phoneContent">
+    <div class="section-label">최근 통화</div>
+    <div class="list-card">
+     <button class="list-row call-row"><span class="avatar">🐰</span><span class="row-main"><span class="row-title">재희 ♡</span><span class="row-sub">발신 통화 · 팬메이드</span></span><span>☎</span></button>
+     <button class="list-row call-row"><span class="avatar">🐰</span><span class="row-main"><span class="row-title">재희 ♡</span><span class="row-sub">부재중 전화 · 가상 기록</span></span><span style="color:#e65b65">☎</span></button>
+    </div>
+    <div class="section-label">연락처</div><div class="list-card"><button class="list-row" id="callJaehee"><span class="avatar">🐰</span><span class="row-main"><span class="row-title">재희</span><span class="row-sub">NCT WISH · 팬메이드 가상 연락처</span></span><span>›</span></button></div>
+    <div id="dialArea" class="hidden"><div style="text-align:center;font-size:28px;min-height:44px" id="dialNumber"></div><div class="keypad" id="dialPad"></div><button class="send" id="dialCall" style="display:block;margin:10px auto;width:60px;height:60px">☎</button></div>
+   </div>
+  </section>
+
+  <section class="screen app-screen" id="photosScreen">
+   <header class="app-header"><div><div style="font-size:12px;color:#8b8792;margin-bottom:3px">추억</div><div class="app-title">사진</div></div><button class="header-action" id="albumBtn">앨범</button></header>
+   <div class="app-content"><div class="section-label">최근 항목 · 팬메이드</div><div class="photo-grid" id="photoGrid"></div><p style="font-size:12px;color:#8b8792;line-height:1.5">이 화면의 그림은 장식용 샘플이야. 재희 사진을 추가하려면 아래 HTML의 PHOTO_ITEMS를 수정하면 돼.</p></div>
+   <div class="photo-view" id="photoView"><button id="closePhoto">‹ 사진</button><span id="bigPhoto">🌈</span></div>
+  </section>
+
+  <section class="screen app-screen" id="notesScreen">
+   <header class="app-header"><div><div style="font-size:12px;color:#8b8792;margin-bottom:3px">나의 iPhone</div><div class="app-title">메모</div></div><button class="header-action" id="addNote">새 메모</button></header>
+   <div class="app-content" id="notesList"></div>
+  </section>
+
+  <section class="screen app-screen" id="noteEditorScreen">
+   <header class="app-header"><button class="back" id="notesBack">‹ 메모</button><span style="font-size:12px;color:#8b8792">메모</span><button class="header-action" id="saveNote">완료</button></header>
+   <div class="app-content" style="height:calc(100% - 94px)"><input id="noteTitle" placeholder="제목" style="border:0;background:transparent;font-size:24px;font-weight:700;width:100%;outline:none;padding:8px 0"><textarea class="note-editor" id="noteBody" placeholder="메모를 입력하세요…"></textarea></div>
+  </section>
+
+  <section class="screen app-screen" id="settingsScreen">
+   <header class="app-header"><div><div style="font-size:12px;color:#8b8792;margin-bottom:3px">iPhone</div><div class="app-title">설정</div></div></header>
+   <div class="app-content">
+    <div class="list-card"><div class="list-row"><div class="avatar">🐰</div><div class="row-main"><div class="row-title">JAEHEE PHONE</div><div class="row-sub">팬메이드 기기 · iOS 감성 테마</div></div><span>›</span></div></div>
+    <div class="section-label">디스플레이</div><div class="list-card">
+     <div class="settings-row"><span class="settings-glyph" style="background:#8c82d7">☾</span><div class="row-main"><div class="row-title">다크 모드</div><div class="row-sub">화면 분위기 변경</div></div><input type="checkbox" class="control" id="darkToggle"></div>
+     <div class="settings-row"><span class="settings-glyph" style="background:#db82a7">◐</span><div class="row-main"><div class="row-title">배경화면 변경</div><div class="row-sub">파스텔 핑크 / 라벤더</div></div><button class="header-action" id="wallToggle">변경</button></div>
+    </div>
+    <div class="section-label">기기</div><div class="list-card">
+     <button class="list-row" id="aboutBtn"><span class="avatar">ⓘ</span><span class="row-main"><span class="row-title">정보</span><span class="row-sub">팬메이드 데모 버전</span></span><span>›</span></button>
+     <button class="list-row" id="lockAgain"><span class="avatar">🔒</span><span class="row-main"><span class="row-title">화면 잠그기</span><span class="row-sub">잠금화면으로 돌아가기</span></span><span>›</span></button>
+    </div>
+    <p style="text-align:center;color:#9a939e;font-size:11px;margin:25px 0">JAEHEE PHONE · FANMADE DEMO</p>
+   </div>
+  </section>
+
+  <section class="screen app-screen" id="calendarScreen">
+   <header class="app-header"><div><div style="font-size:12px;color:#8b8792;margin-bottom:3px">일정</div><div class="app-title">캘린더</div></div></header>
+   <div class="app-content"><div class="list-card" style="padding:20px;text-align:center"><div id="calendarFullDate" style="color:#e65b65"></div><div id="calendarBig" style="font-size:72px;font-weight:250"></div><div style="font-size:14px">오늘도 좋은 하루 ♡</div></div><div class="section-label">예정된 일정</div><div class="list-card"><div class="list-row"><span class="avatar">♡</span><span class="row-main"><span class="row-title">재희 응원하기</span><span class="row-sub">하루 종일 · 나만의 일정</span></span></div></div></div>
+  </section>
+
+  <section class="screen app-screen" id="weatherScreen">
+   <header class="app-header"><div><div style="font-size:12px;color:#8b8792;margin-bottom:3px">오늘</div><div class="app-title">날씨</div></div></header>
+   <div class="app-content" style="text-align:center;padding-top:55px"><div style="font-size:75px">☀️</div><div style="font-size:65px;font-weight:250">22°</div><div style="font-size:17px">맑음</div><div style="color:#8b8792;font-size:13px;margin-top:8px">샘플 날씨 · 실제 날씨 아님</div><div class="list-card" style="margin-top:35px;padding:18px;text-align:left">오늘은 좋아하는 노래를 들으며 산책하기 좋은 기분! ♡</div></div>
+  </section>
+
+  <section class="screen app-screen" id="cameraScreen">
+   <div style="position:absolute;inset:0;background:linear-gradient(#333,#080808);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(65px + var(--safe-top)) 25px calc(45px + var(--safe-bottom));color:white">
+    <div style="font-size:13px">카메라 · 데모 화면</div><div style="font-size:60px">📷</div><button id="shutter" style="width:70px;height:70px;border:5px solid white;border-radius:50%;background:#ffffff45;color:white;font-size:10px">촬영</button>
+   </div>
+  </section>
+
+  <section class="screen app-screen" id="musicScreen">
+   <header class="app-header"><div><div style="font-size:12px;color:#8b8792;margin-bottom:3px">지금 듣기</div><div class="app-title">음악</div></div></header>
+   <div class="app-content" style="text-align:center;padding-top:40px"><div style="width:220px;height:220px;margin:0 auto 25px;border-radius:25px;background:linear-gradient(145deg,#f3c8dc,#c7c4f2);display:grid;place-items:center;font-size:75px;box-shadow:0 12px 35px #7d527733">♡</div><div style="font-size:22px;font-weight:750">Favorite Day</div><div style="color:#8b8792;margin-top:5px">JAEHEE PHONE · Fanmade</div><input type="range" min="0" max="100" value="32" style="width:100%;margin-top:30px;accent-color:#d77da4"><div style="display:flex;justify-content:center;gap:35px;align-items:center;margin-top:20px"><button id="prevSong" style="background:none;font-size:25px">⏮</button><button id="playSong" style="width:58px;height:58px;border-radius:50%;background:#24212a;color:white;font-size:23px">▶</button><button id="nextSong" style="background:none;font-size:25px">⏭</button></div><p style="font-size:12px;color:#8b8792">가상의 음악 플레이어</p></div>
+  </section>
+
+  <section class="screen call-screen" id="callScreen">
+   <div style="font-size:13px;color:#d5cbdc">휴대전화</div><div class="call-avatar">🐰</div><div class="call-name">재희</div><div class="call-sub" id="callState">연결 중… · 가상 통화</div>
+   <div class="call-actions"><div><button class="call-action">🔇</button><div style="font-size:11px;margin-top:7px">음소거</div></div><div><button class="call-action">⌨</button><div style="font-size:11px;margin-top:7px">키패드</div></div><div><button class="call-action">🔊</button><div style="font-size:11px;margin-top:7px">오디오</div></div></div>
+   <button class="end-call" id="endCall">☎</button>
+  </section>
+
+  <div class="toast" id="toast"></div>
+  <div class="home-indicator" id="homeIndicator"></div>
+ </main>
+</div>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const screens = [...document.querySelectorAll('.screen')];
+let current='lockScreen', pin='', chatOpen=false, noteEditing=-1, noteDrafts=[], dark=false, wallpaperAlt=false, dialValue='', callTimer=null;
+const chatMessages=[
+ {from:'in',text:'뭐 해? ㅎㅎ',time:'오후 8:41'},
+ {from:'out',text:'그냥 쉬고 있었어! 재희는?',time:'오후 8:42'},
+ {from:'in',text:'나도 잠깐 쉬는 중 ☺️',time:'오후 8:42'},
+ {from:'in',text:'오늘 하루도 수고했어 ♡',time:'오후 8:43'}
+];
+const PHOTO_ITEMS=['🌸','🐰','🎧','🌙','🩷','☁️','🎀','🌷','✨','🫧','💿','🪻'];
+function showScreen(id){screens.forEach(s=>s.classList.toggle('active',s.id===id));current=id; $('homeIndicator').style.display=['lockScreen','passcodeScreen','callScreen','cameraScreen'].includes(id)?'none':'block';}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),1800)}
+function goHome(){showScreen('homeScreen')}
+function updateClock(){const d=new Date();let h=d.getHours()%12||12,m=String(d.getMinutes()).padStart(2,'0');$('statusTime').textContent=`${h}:${m}`;$('lockClock').textContent=`${h}:${m}`;$('lockDate').textContent=d.toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'long'});$('calDay').textContent=['일','월','화','수','목','금','토'][d.getDay()];$('calNum').textContent=d.getDate();$('calendarFullDate').textContent=d.toLocaleDateString('ko-KR',{year:'numeric',month:'long'});$('calendarBig').textContent=d.getDate()}
+updateClock();setInterval(updateClock,15000);
+function pinDraw(){const pad=$('pinPad');pad.innerHTML='';[1,2,3,4,5,6,7,8,9,'',0,'⌫'].forEach(n=>{const b=document.createElement('button');b.className='key';b.innerHTML=typeof n==='number'?`${n}<small>${['','','ABC','DEF','GHI','JKL','MNO','PQRS','TUV','WXYZ'][n]||''}</small>`:n;b.addEventListener('click',()=>{if(n==='⌫'){pin=pin.slice(0,-1)}else if(typeof n==='number'&&pin.length<4){pin+=n}pinDots();if(pin.length===4){setTimeout(()=>{pin='';pinDots();goHome();toast('잠금 해제 ♡')},180)}});pad.appendChild(b)})}
+function pinDots(){$('pinDots').querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<pin.length))}
+pinDraw();
+function openApp(name){const map={messages:'messagesScreen',phone:'phoneScreen',photos:'photosScreen',notes:'notesScreen',settings:'settingsScreen',calendar:'calendarScreen',weather:'weatherScreen',camera:'cameraScreen',music:'musicScreen'};const id=map[name];if(!id)return;if(name==='messages')renderMessageList();if(name==='notes')renderNotes();showScreen(id)}
+document.querySelectorAll('[data-app]').forEach(b=>b.addEventListener('click',()=>openApp(b.dataset.app)));
+function unlockGesture(){showScreen('passcodeScreen');pin='';pinDots()}
+$('lockScreen').addEventListener('click',e=>{if(e.target.closest('button'))return;unlockGesture()});
+$('lockScreen').addEventListener('touchstart',e=>{window.touchStartY=e.touches[0].clientY},{passive:true});
+$('lockScreen').addEventListener('touchend',e=>{if(window.touchStartY-e.changedTouches[0].clientY>35)unlockGesture()},{passive:true});
+$('cancelPin').addEventListener('click',()=>showScreen('lockScreen'));
+$('flashBtn').addEventListener('click',()=>toast('손전등 · 데모 기능'));
+$('cameraQuick').addEventListener('click',()=>openApp('camera'));
+$('homeIndicator').addEventListener('click',()=>{if(current==='passcodeScreen')return;if(current==='callScreen')return;goHome()});
+$('homeIndicator').addEventListener('touchstart',e=>{window.homeTouchY=e.touches[0].clientY},{passive:true});
+$('homeIndicator').addEventListener('touchend',e=>{if(window.homeTouchY-e.changedTouches[0].clientY>20)goHome()},{passive:true});
+let touchX=0,touchY=0;
+$('phone').addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX;touchY=e.changedTouches[0].clientY},{passive:true});
+$('phone').addEventListener('touchend',e=>{let dx=e.changedTouches[0].clientX-touchX,dy=e.changedTouches[0].clientY-touchY;if(current==='homeScreen'&&Math.abs(dx)>70){toast(dx<0?'다음 홈 화면':'이전 홈 화면')}else if(!['lockScreen','passcodeScreen','homeScreen','callScreen'].includes(current)&&dy>100&&touchY<100){goHome()}},{passive:true});
+$('chatBack').addEventListener('click',()=>{showScreen('messagesScreen');renderMessageList()});
+$('newChat').addEventListener('click',()=>toast('모든 대화가 표시되고 있어요'));
+$('chatInfo').addEventListener('click',()=>toast('재희 · 팬메이드 가상 대화'));
+function renderMessageList(){const list=$('messageList');list.innerHTML='<div class="section-label">고정된 대화</div><div class="list-card"><button class="list-row" id="openJaeheeChat"><span class="avatar">🐰</span><span class="row-main"><span class="row-title">재희 ♡</span><span class="row-sub">'+(chatMessages.at(-1)?.text||'새로운 대화')+'</span></span><span class="row-time">지금</span></button></div><div class="section-label">메시지</div><p style="padding:5px;color:#8b8792;font-size:12px">이 대화는 팬메이드 가상 메시지예요.</p>';list.querySelector('#openJaeheeChat').addEventListener('click',()=>{chatOpen=true;renderChat();showScreen('chatScreen')})}
+function renderChat(){const content=$('chatContent');content.innerHTML='<div class="chat-thread">'+chatMessages.map(m=>`<div class="bubble ${m.from}">${escapeHtml(m.text)}</div>`).join('')+'</div>';content.scrollTop=content.scrollHeight}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+$('chatForm').addEventListener('submit',e=>{e.preventDefault();const v=$('chatInput').value.trim();if(!v)return;chatMessages.push({from:'out',text:v,time:'지금'});$('chatInput').value='';renderChat();setTimeout(()=>{chatMessages.push({from:'in',text:['ㅎㅎ 그렇구나 ☺️','오 좋다!','오늘도 고생했어 ♡','ㅋㅋㅋ 완전 좋아'][Math.floor(Math.random()*4)],time:'지금'});if(current==='chatScreen')renderChat()},850)});
+$('showDial').addEventListener('click',()=>{$('dialArea').classList.toggle('hidden');renderDialPad()});
+function renderDialPad(){const pad=$('dialPad');pad.innerHTML='';[1,2,3,4,5,6,7,8,9,'*',0,'⌫'].forEach(n=>{const b=document.createElement('button');b.className='key';b.textContent=n;b.addEventListener('click',()=>{if(n==='⌫')dialValue=dialValue.slice(0,-1);else dialValue+=n;$('dialNumber').textContent=dialValue});pad.appendChild(b)})}
+renderDialPad();
+function startCall(){showScreen('callScreen');$('callState').textContent='연결 중… · 가상 통화';clearTimeout(callTimer);callTimer=setTimeout(()=>{if(current==='callScreen')$('callState').textContent='통화 중 · 팬메이드 시뮬레이션'},1200)}
+$('callJaehee').addEventListener('click',startCall);document.querySelectorAll('.call-row').forEach(b=>b.addEventListener('click',startCall));$('dialCall').addEventListener('click',startCall);$('endCall').addEventListener('click',()=>{clearTimeout(callTimer);showScreen('phoneScreen');toast('가상 통화가 종료됐어요')});
+function renderPhotos(){const grid=$('photoGrid');grid.innerHTML='';PHOTO_ITEMS.forEach((p,i)=>{const b=document.createElement('button');b.className='photo';b.textContent=p;b.setAttribute('aria-label',`샘플 사진 ${i+1}`);b.addEventListener('click',()=>{$('bigPhoto').textContent=p;$('photoView').classList.add('show')});grid.appendChild(b)})}
+renderPhotos();$('closePhoto').addEventListener('click',()=>$('photoView').classList.remove('show'));$('albumBtn').addEventListener('click',()=>toast('최근 항목 · 샘플 앨범'));
+function renderNotes(){const list=$('notesList');list.innerHTML='';if(!noteDrafts.length){noteDrafts=[{title:'재희에게 ♡',body:'오늘도 응원해!\\n항상 행복하고 건강하길 ☺️',date:'오늘'}]}noteDrafts.forEach((n,i)=>{const b=document.createElement('button');b.className='note-card';b.innerHTML=`<strong>${escapeHtml(n.title||'제목 없음')}</strong><div style="white-space:pre-wrap;font-size:13px;max-height:40px;overflow:hidden">${escapeHtml(n.body||'내용 없음')}</div><small>${n.date||'오늘'}</small>`;b.addEventListener('click',()=>editNote(i));list.appendChild(b)})}
+function editNote(i=-1){noteEditing=i;const n=i>=0?noteDrafts[i]:{title:'',body:'',date:'오늘'};$('noteTitle').value=n.title;$('noteBody').value=n.body;showScreen('noteEditorScreen')}
+$('addNote').addEventListener('click',()=>editNote(-1));$('notesBack').addEventListener('click',()=>{showScreen('notesScreen');renderNotes()});$('saveNote').addEventListener('click',()=>{const n={title:$('noteTitle').value.trim()||'제목 없음',body:$('noteBody').value,date:'오늘'};if(noteEditing>=0)noteDrafts[noteEditing]=n;else noteDrafts.unshift(n);showScreen('notesScreen');renderNotes();toast('메모 저장됨')});
+$('darkToggle').addEventListener('change',e=>{dark=e.target.checked;document.querySelectorAll('.app-screen').forEach(s=>{s.style.background=dark?'#24232a':'#f8f7fa';s.style.color=dark?'#f7f3f8':'#17151c'});document.querySelectorAll('.app-header').forEach(s=>s.style.background=dark?'#24232aee':'#f8f7faef');toast(dark?'다크 모드 켬':'라이트 모드 켬')});
+$('wallToggle').addEventListener('click',()=>{wallpaperAlt=!wallpaperAlt;$('wallpaper').style.background=wallpaperAlt?'radial-gradient(ellipse at 15% 20%,#fff8 0 8%,transparent 32%),linear-gradient(145deg,#d8e9f6,#e4d8f3 50%,#f4d8df)':'radial-gradient(ellipse at 18% 22%,#fff8 0 8%,transparent 32%),radial-gradient(ellipse at 90% 38%,#fff8 0 7%,transparent 30%),radial-gradient(ellipse at 50% 88%,#e8c2d7 0 12%,transparent 44%),linear-gradient(145deg,#f2d9e5,#d8d8f2 48%,#f8e9e9)';toast('배경화면을 변경했어요')});
+$('aboutBtn').addEventListener('click',()=>toast('JAEHEE PHONE · 팬메이드 데모'));$('lockAgain').addEventListener('click',()=>showScreen('lockScreen'));
+$('shutter').addEventListener('click',()=>{toast('샘플 사진이 촬영됐어요');openApp('photos')});
+$('prevSong').addEventListener('click',()=>toast('이전 곡 · 데모'));$('nextSong').addEventListener('click',()=>toast('다음 곡 · 데모'));$('playSong').addEventListener('click',e=>{e.currentTarget.textContent=e.currentTarget.textContent==='▶'?'Ⅱ':'▶';toast('가상 플레이어')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(current==='chatScreen')showScreen('messagesScreen');else goHome()}});
+})();
+</script>
+</body>
+</html>
